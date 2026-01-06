@@ -1,15 +1,16 @@
+# empty your environment to avoid complications
+rm(list = ls())
 
+# load libraries
+library(readxl)
+library(RLDNe)
+library(dplyr)
 
-# create a directory to save results if it does not exist already
-path_directory <- paste("Results", describe_results_variable, "/NeEstimator", sep = "")
-if (!file.exists(path_directory)) {
-  dir.create(path_directory, recursive = TRUE)
-}
-# make sure results are saved in the folder for Ne results (created in R)
-setwd(path_directory)
+# load file
+file_path <- "datasets/Abies_alba.xlsx" # name of your .xlsx-file
+sheet <- "welcomeR"
+Ne_Estimator_file <- read_xlsx(file_path, sheet = sheet)
 
-# rename original_file
-Ne_Estimator_file <- original_file
 
 # Format input file similar to the example file given from the package RLDNe
 # Format Ne_Estimator_file until it is similar to "wgp_example_2col"
@@ -67,7 +68,7 @@ for (individual in 1:nrow(Ne_Estimator_file)) {
   columns <- ncol(Ne_Estimator_file)
   ratio <- count_missing_data / columns
   # add the individual to a removal vector if they have more missing data than the threshold ratio
-  if (ratio > threshold_percentage_of_missing_values_that_is_removed) {
+  if (ratio > 0.2) {
     individuals_to_remove <- c(individuals_to_remove, individual)
   }
 }
@@ -83,7 +84,7 @@ remove_populations <- c()
 for (site in unique(Ne_Estimator_file$pop)) {
   count <- sum(Ne_Estimator_file$pop == site) # count individuals per population
   # add them
-  if (count < remove_sites+1){
+  if (count < 30){
     remove_populations <- c(remove_populations, site)
   }
 }
@@ -117,17 +118,6 @@ for (locus in names(Ne_Estimator_file[-1:-2])) {
   }
 }
 
-# How to communicate ploidy with NeEstimator
-if (ploidy==1){ploidy <- F} else if (ploidy == 2) {ploidy <- T} else {
-  cat("There is no function which can calculate this ploidy.")
-}
-
-# if the ploidy is 1 there can be a problem with an "uneven number of alleles" , sadly there is no manual or example code. Thats why I did not know how to help myself in a different way than deleting on allele (locus)...
-if (ploidy == F) {
-  if (ncol(Ne_Estimator_file) %% 2 != 0) {
-    Ne_Estimator_file <- Ne_Estimator_file[,-3]
-  }
-}
   
 # generate the effective population size: 
 colnames(Ne_Estimator_file) <- gsub("_(\\d)$",replacement = "\\.A\\1",colnames(Ne_Estimator_file))
@@ -143,7 +133,7 @@ Ne_estimates <- read_LDNeOutFile(rldne)
 Ne_R_results <- Ne_estimates %>%
   filter(CritValue == 0.05) %>%
   transmute(
-    site,
+    Pop,
     Ne,
     lower_jackknife_confidence_interval = low_jack,
     upper_jackknife_confidence_interval = high_jack,
@@ -153,5 +143,9 @@ Ne_R_results <- Ne_estimates %>%
 
 
 # save results as a .csv- file
-# make sure the final results are saved in the correct folder
-write.csv(Ne_R_results, file = "Ne_results.csv", row.names = FALSE)
+input_name <- tools::file_path_sans_ext(basename(file_path))
+write.csv(
+  Ne_R_results,
+  file = paste0("results/NeEstimator/", input_name, ".csv"),
+  row.names = FALSE
+)
