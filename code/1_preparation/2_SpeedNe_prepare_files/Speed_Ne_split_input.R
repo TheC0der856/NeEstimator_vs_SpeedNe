@@ -1,6 +1,3 @@
-# empty your environment to avoid complications
-rm(list = ls())
-
 # load libraries
 library(readxl)
 library(dplyr)
