@@ -1,0 +1,8 @@
+*.Rpro*
+*.md
+.Rhistory
+.RData
+.Ruserdata
+
+
+datasets/*
