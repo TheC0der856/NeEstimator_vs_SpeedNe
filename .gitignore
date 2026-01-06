@@ -6,6 +6,6 @@
 
 
 datasets/*
-SpeedNe_inputs/*
+SpeedNe_input/*
 results/*
 .Rproj.user
