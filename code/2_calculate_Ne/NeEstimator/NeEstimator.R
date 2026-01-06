@@ -1,13 +1,11 @@
-# empty your environment to avoid complications
-rm(list = ls())
-
 # load libraries
 library(readxl)
 library(RLDNe)
 library(dplyr)
 
 # load file
-file_path <- "datasets/Abies_alba.xlsx" # name of your .xlsx-file
+args <- commandArgs(trailingOnly = TRUE)
+file_path <- args[1]
 sheet <- "welcomeR"
 Ne_Estimator_file <- read_xlsx(file_path, sheet = sheet)
 
