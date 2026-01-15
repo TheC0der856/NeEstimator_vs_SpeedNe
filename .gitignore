@@ -8,8 +8,8 @@
 datasets/*
 SpeedNe_input/*
 code/1_preparation/1_installations/ignore*
-code/1_preparation/2_SpeedNe_prepare_files/*.sh
+code/**/*.sh
 results/*
 .Rproj.user
-code/**/*.sh
+
 
