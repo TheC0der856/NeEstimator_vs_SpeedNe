@@ -10,3 +10,5 @@ SpeedNe_input/*
 code/1_preparation/1_installations/ignore*
 results/*
 .Rproj.user
+code/**/*.sh
+
