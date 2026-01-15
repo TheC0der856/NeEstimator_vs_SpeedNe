@@ -5,8 +5,8 @@ library(dplyr)
 
 # measure time and RAM
 start_time <- Sys.time()
-gc()
-mem_before <- sum(gc()[, "used"])
+#gc()
+#mem_before <- sum(gc()[, "used"])
 
 
 # load file
@@ -156,7 +156,7 @@ write.csv(
 )
 
 # show time and RAM
-mem_after <- sum(gc()[, "used"])
+#mem_after <- sum(gc()[, "used"])
 end_time <- Sys.time()
 end_time - start_time
-mem_after - mem_before
+#mem_after - mem_before
