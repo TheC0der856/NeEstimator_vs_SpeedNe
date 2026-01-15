@@ -2,6 +2,12 @@
 library(readxl)
 library(dplyr)
 
+
+#
+start_time <- Sys.time()
+gc()
+mem_before <- sum(gc()[, "used"])
+
 # find files
 xlsx_files <- list.files("datasets", pattern = "\\.xlsx$", full.names = TRUE)
 
@@ -90,3 +96,8 @@ for (file in input_files) {
 }
 
 # this did not work, column names were removed manually and " was removed manually if numbers were treated as characters, but was not time tracked
+
+mem_after <- sum(gc()[, "used"])
+end_time <- Sys.time()
+end_time - start_time
+mem_after - mem_before
