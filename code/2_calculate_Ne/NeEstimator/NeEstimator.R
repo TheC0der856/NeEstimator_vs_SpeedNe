@@ -3,12 +3,6 @@ library(readxl)
 library(RLDNe)
 library(dplyr)
 
-# measure time and RAM
-start_time <- Sys.time()
-#gc()
-#mem_before <- sum(gc()[, "used"])
-
-
 # load file
 #args <- commandArgs(trailingOnly = TRUE)
 #file_path <- args[1]
@@ -127,12 +121,18 @@ for (locus in names(Ne_Estimator_file[-1:-2])) {
 # generate the effective population size: 
 colnames(Ne_Estimator_file) <- gsub("_(\\d)$",replacement = "\\.A\\1",colnames(Ne_Estimator_file))
 
+# measure time
+start_time <- Sys.time()
+
 efgl <- readInData(Ne_Estimator_file,genotypeStart = 3,pedigreeColumn = 2,nameColumn = 1)
 rldne <- exportGenePop_RLDNe(EFGLdata = efgl)
 rldne <- create_LDNe_params(rldne)
 std_out <- run_LDNe(rldne)
 Ne_estimates <- read_LDNeOutFile(rldne)
 
+# show time
+end_time <- Sys.time()
+end_time - start_time
 
 # create an empty data frame to save Ne for every site
 Ne_R_results <- Ne_estimates %>%
@@ -155,8 +155,3 @@ write.csv(
   row.names = FALSE
 )
 
-# show time and RAM
-#mem_after <- sum(gc()[, "used"])
-end_time <- Sys.time()
-end_time - start_time
-#mem_after - mem_before
