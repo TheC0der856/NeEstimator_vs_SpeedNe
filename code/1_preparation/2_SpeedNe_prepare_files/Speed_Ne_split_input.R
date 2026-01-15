@@ -89,3 +89,4 @@ for (file in input_files) {
   writeLines(text, file)
 }
 
+# this did not work, column names were removed manually and " was removed manually if numbers were treated as characters, but was not time tracked

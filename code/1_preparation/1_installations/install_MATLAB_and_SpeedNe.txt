@@ -1,1 +1,21 @@
-first MATLAB needs to be installed and then you can install SpeedNe as an add on...
+#enter server
+ssh -p 12345 gronefeld@eocpv016.uni-trier.de
+cd /data/eocps010/biogeo/gronefeld_sarah/
+
+#install SpeedNe
+mkdir -p matlab/SpEED-Ne
+cd matlab/SpEED-Ne
+git clone https://github.com/mbhamilton/SpEED-Ne.git .
+
+# führe matlab aus
+/extern/matlab/matlabR2025b/bin/matlab
+
+# open SpeedNe
+rmpath(genpath('~/matlab/SpEED-Ne'))
+addpath(genpath('~/matlab/SpEED-Ne/SpEED-Ne_v2.6 functions'))
+addpath(genpath('~/matlab/SpEED-Ne/data format functions'))
+addpath(genpath('~/matlab/SpEED-Ne/simulation functions'))
+
+
+# test run
+# Lässt sich nicht ohne Benutzeroberfläche ausführen!
