@@ -65,3 +65,75 @@ mem_test
 #alternative hypothesis: true location shift is not equal to 0
 
 #3stern p < 0.001, ** p < 0.01, * p < 0.05, this p is significant one star
+
+# SNPs vs microsatellites
+microsatellite_data_sets <- c("Ambystoma_bishopi", 
+                              "Avicennia_marina", 
+                              "Cameraria_ohridella", 
+                              "Carcinus_meanas", 
+                              "Cercidiphyllum_japonicum", 
+                              "Cymodocea_nodosa", 
+                              "Cystoseira_amentaceae",
+                              "Euphydryas_aurina" ,
+                              "Mytilus_galloprovincialis",
+                              "Pagophila_eburnea", 
+                              "Panthera_leo", 
+                              "Posidonia_oceanica",
+                              "Pyura_chilensis",
+                              "Syncerus_caffer",
+                              "Varroa_jacobsoni")
+SNP_data_sets <- c("Abies_alba", 
+                   "Argiope_bruennichi", 
+                   "Atriophallophorus_winterbourni", 
+                   "Dracocephalum_ruyschiana",
+                   "Entosphenus_tridentatus",
+                   "Frangula_alnus",
+                   "Gadus_morhua", 
+                   "Melitaea_cinxia",
+                   "Nilparvata_lugens",
+                   "Oncorhynchus_mykiss",
+                   "Oncorhynchus_tshawytscha",
+                   "Physeter_macrocephalus",
+                   "Pinus_halepensis",
+                   "Salmo_trutta",
+                   "Tectona_grandis")
+NeEstimator$SNP_vs_micro <- ifelse(
+  NeEstimator$file %in% SNP_data_sets, "SNP",
+  ifelse(NeEstimator$file %in% microsatellite_data_sets, "microsatellite", NA)
+)
+SpeedNe$SNP_vs_micro <- ifelse(
+  SpeedNe$file %in% SNP_data_sets, "SNP",
+  ifelse(SpeedNe$file %in% microsatellite_data_sets, "microsatellite", NA)
+)
+
+
+# SNPs time and memory
+# number datasets
+n_snp <- sum(NeEstimator$SNP_vs_micro == "SNP", na.rm = TRUE)
+# time
+NeEstimator_time <- sum(NeEstimator$sec2compare[NeEstimator$SNP_vs_micro == "SNP"],
+                        na.rm = TRUE) / n_snp
+SpeedNe_time <- sum(as.numeric(SpeedNe$seconds[NeEstimator$SNP_vs_micro == "SNP"]),
+                    na.rm = TRUE) / n_snp
+
+# memory
+NeEstimator_mem <- sum(NeEstimator$memory_mb[NeEstimator$SNP_vs_micro == "SNP"],
+                       na.rm = TRUE) / n_snp
+SpeedNe_mem <- sum(as.numeric(SpeedNe$memory_mb[NeEstimator$SNP_vs_micro == "SNP"]),
+                   na.rm = TRUE) / n_snp
+
+
+# microsatellites
+# number datasets
+n_snp <- sum(NeEstimator$SNP_vs_micro == "microsatellite", na.rm = TRUE)
+# time
+NeEstimator_time <- sum(NeEstimator$sec2compare[NeEstimator$SNP_vs_micro == "microsatellite"],
+                        na.rm = TRUE) / n_snp
+SpeedNe_time <- sum(as.numeric(SpeedNe$seconds[NeEstimator$SNP_vs_micro == "microsatellite"]),
+                    na.rm = TRUE) / n_snp
+
+# memory
+NeEstimator_mem <- sum(NeEstimator$memory_mb[NeEstimator$SNP_vs_micro == "microsatellite"],
+                       na.rm = TRUE) / n_snp
+SpeedNe_mem <- sum(as.numeric(SpeedNe$memory_mb[NeEstimator$SNP_vs_micro == "microsatellite"]),
+                   na.rm = TRUE) / n_snp
