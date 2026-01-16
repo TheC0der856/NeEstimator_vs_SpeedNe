@@ -19,32 +19,27 @@ memory <- data.frame(
   SpeedNe     = c(1334, 966, 1702)
 )
   
-barplot(
-  t(as.matrix(errors[, c("NeEstimator", "SpeedNe")])), # transponieren, damit Kategorien auf x-Achse
-  beside = TRUE,                                       # Bars nebeneinander
-  names.arg = errors$category,                         # Kategorien auf x-Achse
-  col = c("grey", "black"),                        # Farben für die Tools
-  #legend.text = c("NeEstimator", "SpeedNe"),          # Legende
-  args.legend = list(x = "topright"),
-  ylab = "Errors [%]"
-)
 
-barplot(
-  t(as.matrix(time[, c("NeEstimator", "SpeedNe")])), # transponieren, damit Kategorien auf x-Achse
-  beside = TRUE,                                       # Bars nebeneinander
-  names.arg = time$category,                         # Kategorien auf x-Achse
-  col = c("grey", "black"),                        # Farben für die Tools
-  #legend.text = c("NeEstimator", "SpeedNe"),          # Legende
-  args.legend = list(x = "topright"),
-  ylab = "Time [sec]"
-)
+# preparations
+errors$Metric <- "Errors [%]"
+time$Metric <- "Time [sec]"
+memory$Metric <- "Memory [MB]"
+combined <- rbind(errors, time, memory)
 
-barplot(
-  t(as.matrix(memory[, c("NeEstimator", "SpeedNe")])), # transponieren, damit Kategorien auf x-Achse
-  beside = TRUE,                                       # Bars nebeneinander
-  names.arg = memory$category,                         # Kategorien auf x-Achse
-  col = c("grey", "black"),                        # Farben für die Tools
-  #legend.text = c("NeEstimator", "SpeedNe"),          # Legende
-  args.legend = list(x = "topright"),
-  ylab = "Memory [MB]"
-)
+# long format
+combined_long <- pivot_longer(combined, cols = c("NeEstimator", "SpeedNe"),
+                              names_to = "Tool", values_to = "Value")
+
+ggplot(combined_long, aes(x = category, y = Value, fill = Tool)) +
+  geom_bar(stat = "identity", position = "dodge", show.legend = FALSE) +
+  facet_wrap(~Metric, scales = "free_y") +   
+  scale_fill_manual(values = c("grey", "black")) +
+  labs(x = "", y = "", title = "") +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 12),         # Achsentexte
+    axis.ticks = element_line(size = 0.5, color = "black"),  # Ticks sichtbar
+    axis.line = element_line(size = 0.5, color = "black"),   # Achsenlinien sichtbar
+    strip.text = element_text(size = 15),        # Facet-Titel
+    panel.grid = element_blank()                 # Keine Gitterlinien
+  )
