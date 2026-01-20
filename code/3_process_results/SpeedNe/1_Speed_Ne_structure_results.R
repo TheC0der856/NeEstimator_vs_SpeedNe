@@ -1,12 +1,9 @@
-gc ()
-
-mem_before <- sum(gc()[, "used"])
-
 system.time({
 ############################ Isolate results from Speed_Ne folder #################################
     
 # Create an empty data frame for the effective population sizes.
 Ne_results <- data.frame(
+  dataset = numeric(0),
   site = numeric(0),
   Ne = numeric(0),
   lower_97_5_interval_percentile = numeric(0),
@@ -29,6 +26,7 @@ counter <- 0
 for(Speed_Ne_result_file in Speed_Ne_result_files) {
   # remember the name of the site
   site_name <- sub("\\.txt$", "", basename(Speed_Ne_result_file))
+  dataset_name <- basename(dirname(Speed_Ne_result_file))
       
   # read in the Speed Ne output file
   Speed_Ne_output <- readLines(Speed_Ne_result_file)
@@ -110,6 +108,7 @@ for(Speed_Ne_result_file in Speed_Ne_result_files) {
     if (!is.na(Speed_Ne_result[1]) && length(Speed_Ne_result) == 3) {
       # Create a new data_frame to add it later on to the already existing
       new_row <- data.frame(
+        dataset = dataset_name,
         site = site_name,
         Ne = Speed_Ne_result[1],
         lower_97_5_interval_percentile = Speed_Ne_result[2],
@@ -126,6 +125,7 @@ for(Speed_Ne_result_file in Speed_Ne_result_files) {
           
   } else {  
     new_row <- data.frame(
+      dataset = dataset_name,
       site = site_name,
       Ne = NA,
       lower_97_5_interval_percentile = NA,
@@ -150,11 +150,7 @@ if ("infinity" %in% Ne_results$Ne || any(as.numeric(Ne_results$Ne) < 0) || any(i
 
 # end of time counting    
 })
-# count MB used
-mem_after <- sum(gc()[, "used"])
-mem_after - mem_before
-# this is more or less 0.02 seconds per population and 9 MB. 
-# this is nothing
+
 ######################### save table ####################################################
     
     
@@ -162,8 +158,7 @@ mem_after - mem_before
 #Ne_results_with_percentages <- mutate(Ne_results, proportions_of_Ne = (as.numeric(Ne) / sum(as.numeric(Ne_results$Ne))*100))
     
 # save results as .csv -file
-# save with the name of the folder
-write.csv(Ne_results, file = paste("results/NeSpeed/output/processed/name_of_species.csv", sep =""), row.names = FALSE)
+write.csv(Ne_results, file = paste("results/SpeedNe/processed/all_datasets.csv", sep =""), row.names = FALSE)
     
     
     
