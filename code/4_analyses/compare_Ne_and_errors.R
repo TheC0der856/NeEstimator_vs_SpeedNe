@@ -6,149 +6,20 @@ neest   <- read.csv("results/NeEstimator/summary_Ne.csv")
 
 # clean data
 # show sites which are in speedne but not in neest
-anti_join(speedne, neest , by = c("site", "dataset")) %>%
+anti_join(neest, speedne, by = c("site", "dataset")) %>%
   select(site, dataset) %>%
   distinct()
 
-# Why?
-# is Svalbard missing in NeEstimator?
 
 
 # Why?
 speedne_sites <- speedne %>%
-  filter(dataset == "Euphydryas_aurina") %>%
+  filter(dataset == "Pagophila_eburnea") %>%
   pull(site)
 neest_sites <- neest %>%
-  filter(dataset == "Euphydryas_aurina") %>%
+  filter(dataset == "Pagophila_eburnea") %>%
   pull(site)
-# remove sites
-speedne <- speedne %>%
-  filter(!(site %in% setdiff(speedne_sites, neest_sites)))
 
-# Why?
-speedne_sites <- speedne %>%
-  filter(dataset == "Carcinus_meanas") %>%
-  pull(site)
-neest_sites <- neest %>%
-  filter(dataset == "Carcinus_meanas") %>%
-  pull(site)
-# remove sites
-speedne <- speedne %>%
-  filter(!(site %in% setdiff(speedne_sites, neest_sites)))
-
-# Why?
-speedne_sites <- speedne %>%
-  filter(dataset == "Carcinus_meanas") %>%
-  pull(site)
-neest_sites <- neest %>%
-  filter(dataset == "Carcinus_meanas") %>%
-  pull(site)
-# remove sites
-speedne <- speedne %>%
-  filter(!(site %in% setdiff(speedne_sites, neest_sites)))
-
-# Why?
-speedne_sites <- speedne %>%
-  filter(dataset == "Cymodocea_nodosa") %>%
-  pull(site)
-neest_sites <- neest %>%
-  filter(dataset == "Cymodocea_nodosa") %>%
-  pull(site)
-neest <- neest %>%
-  mutate(site = ifelse(site == "layaSjuan", "PlayaSjuan", site))
-neest <- neest %>%
-  mutate(site = ifelse(site == "EsBanc", "EsBlanc", site))
-speedne <- speedne %>%
-  mutate(site = ifelse(site == "LEsperanza", "Esperanza", site))
-
-# Why?
-speedne_sites <- speedne %>%
-  filter(dataset == "Entosphenus_tridentatus") %>%
-  pull(site)
-neest_sites <- neest %>%
-  filter(dataset == "Entosphenus_tridentatus") %>%
-  pull(site)
-speedne_sites 
-neest_sites
-neest <- neest %>%
-  mutate(site = ifelse(site == "15_Mile_Creek", "15_Miles_Creek", site))
-
-
-# Why?
-speedne_sites <- speedne %>%
-  filter(dataset == "Avicennia_marina") %>%
-  pull(site)
-neest_sites <- neest %>%
-  filter(dataset == "Avicennia_marina") %>%
-  pull(site)
-speedne_sites
-neest_sites # has additional X
-# remove X
-neest <- neest %>%
-  mutate(site = ifelse(
-    dataset == "Avicennia_marina",
-    sub("^X", "", site),    # entfernt führendes "X"
-    site                    # alle anderen unverändert
-  ))
-
-# Why?
-speedne_sites <- speedne %>%
-  filter(dataset == "Tectona_grandis") %>%
-  pull(site)
-neest_sites <- neest %>%
-  filter(dataset == "Tectona_grandis") %>%
-  pull(site)
-speedne_sites # has sites which do not have 30 individuals
-neest_sites
-# remove sites
-speedne <- speedne %>%
-  filter(!(site %in% setdiff(speedne_sites, neest_sites)))
-
-# Why?
-speedne_sites <- speedne %>%
-  filter(dataset == "Cameraria_ohridella") %>%
-  pull(site)
-neest_sites <- neest %>%
-  filter(dataset == "Cameraria_ohridella") %>%
-  pull(site)
-# remove sites
-speedne <- speedne %>%
-  filter(!(site %in% setdiff(speedne_sites, neest_sites)))
-
-# Why?
-speedne_sites <- speedne %>%
-  filter(dataset == "Gadus_morhua") %>%
-  pull(site)
-neest_sites <- neest %>%
-  filter(dataset == "Gadus_morhua") %>%
-  pull(site)
-# remove sites
-speedne <- speedne %>%
-  filter(!(site %in% setdiff(speedne_sites, neest_sites)))
-
-# Why?
-speedne_sites <- speedne %>%
-  filter(dataset == "Cystoseira_amentaceae") %>%
-  pull(site)
-neest_sites <- neest %>%
-  filter(dataset == "Cystoseira_amentaceae") %>%
-  pull(site)
-# remove sites
-speedne <- speedne %>%
-  filter(!(site %in% setdiff(speedne_sites, neest_sites)))
-
-# Why?
-speedne_sites <- speedne %>%
-  filter(dataset == "Pinus_halepensis") %>%
-  pull(site)
-neest_sites <- neest %>%
-  filter(dataset == "Pinus_halepensis") %>%
-  pull(site)
-# use _ instead
-speedne <- speedne %>%
-  mutate(site = gsub("[\\. ]", "_", site))
-neest <- neest %>%
-  mutate(site = gsub("[\\. ]", "_", site))
 
 
 

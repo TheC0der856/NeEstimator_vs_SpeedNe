@@ -7,7 +7,7 @@ library(dplyr)
 file_paths <- list.files(path = "datasets/", full.names = TRUE)
 sheet <- "welcomeR"
 # e.g. always change
-# file_path <- "datasets/Pagophila_eburnea.xlsx"
+# file_path <- "datasets/Melitaea_cinxia.xlsx"
 Ne_Estimator_file <- read_xlsx(file_path , sheet = sheet)
 
 
