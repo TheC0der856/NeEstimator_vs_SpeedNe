@@ -2,13 +2,13 @@
 
 # file names
 SpeedNe_files   <- list.files(path = "results/SpeedNe/output/", pattern = "\\.txt$", full.names = TRUE, recursive = TRUE)
-site_name       <- sub("\\.txt$", "", basename(SpeedNe_files))
-dataset_name    <- basename(dirname(SpeedNe_files))
+site            <- sub("\\.txt$", "", basename(SpeedNe_files))
+dataset         <- basename(dirname(SpeedNe_files))
 
 # prepare data frame for result summary
 summary <- data.frame(
-  site_name    = character(),
-  dataset_name = character(),
+  site         = character(),
+  dataset      = character(),
   Ne           = numeric(),
   lower_CI     = numeric(),
   upper_CI     = numeric(),
@@ -48,11 +48,11 @@ for (i in seq_along(SpeedNe_files)) {
   summary <- rbind(
     summary,
     data.frame(
-      site_name    = site_name[i],
-      dataset_name = dataset_name[i],
-      Ne           = round(Ne, 2),
-      lower_CI     = round(lower_CI, 2),
-      upper_CI     = round(upper_CI, 2),
+      site         = site[i],
+      dataset      = dataset[i],
+      Ne           = round(Ne, 1),
+      lower_CI     = round(lower_CI, 1),
+      upper_CI     = round(upper_CI, 1),
       stringsAsFactors = FALSE
     )
   )

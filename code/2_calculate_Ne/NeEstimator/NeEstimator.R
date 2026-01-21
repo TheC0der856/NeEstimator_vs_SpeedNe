@@ -4,11 +4,11 @@ library(RLDNe)
 library(dplyr)
 
 # load file
-#args <- commandArgs(trailingOnly = TRUE)
-#file_path <- args[1]
-file_path <- list.files(path = "datasets/")
+file_paths <- list.files(path = "datasets/", full.names = TRUE)
 sheet <- "welcomeR"
-Ne_Estimator_file <- read_xlsx(file_path, sheet = sheet)
+# e.g. always change
+# file_path <- "datasets/Pagophila_eburnea.xlsx"
+Ne_Estimator_file <- read_xlsx(file_path , sheet = sheet)
 
 
 # Format input file similar to the example file given from the package RLDNe
@@ -151,7 +151,7 @@ Ne_R_results <- Ne_estimates %>%
 input_name <- tools::file_path_sans_ext(basename(file_path))
 write.csv(
   Ne_R_results,
-  file = paste0("results/NeEstimator/", input_name, ".csv"),
+  file = paste0("results/NeEstimator/Ne/", input_name, ".csv"),
   row.names = FALSE
 )
 

@@ -1,0 +1,80 @@
+Output from NeEstimator v2.1
+Starting time: Wed Jan 21 20:44:42 2026
+Input File #1: "genepop.gen"
+
+Number of Loci = 15
+
+LD mating model: Random
+
+Population     1 [Groenland]  (Number of Individuals = 106)
+****************
+--------------------------------------------------------------------------
+Lowest Allele Frequency Used     0.100       0.050       0.020         0+
+--------------------------------------------------------------------------
+
+LINKAGE DISEQUILIBRIUM METHOD
+
+Harmonic Mean Sample Size =      104.1       103.8       103.7       103.9
+Independent Comparisons =       1118        2554        6131        9107
+OverAll r^2 =                 0.009815    0.010361    0.010338    0.010152
+Expected r^2 Sample =         0.009895    0.009920    0.009931    0.009914
+Estimated Ne^ =               Infinite       753.8       815.2      1399.3
+
+95% CIs for Ne^
+* Parametric                     421.6       320.4       423.2       616.0
+                              Infinite    Infinite      6480.0    Infinite
+
+* JackKnife on Samples           226.7       167.9       337.1       451.9
+                              Infinite    Infinite    Infinite    Infinite
+
+**************************************************************************
+
+Population     2 [Russia]  (Number of Individuals = 71)
+****************
+--------------------------------------------------------------------------
+Lowest Allele Frequency Used     0.100       0.050       0.020         0+
+--------------------------------------------------------------------------
+
+LINKAGE DISEQUILIBRIUM METHOD
+
+Harmonic Mean Sample Size =       65.8        64.8        64.6        64.3
+Independent Comparisons =       1240        2991        6058        8737
+OverAll r^2 =                 0.015712    0.016106    0.016434    0.016202
+Expected r^2 Sample =         0.015816    0.016025    0.016078    0.016128
+Estimated Ne^ =               Infinite      4135.9       934.7      4504.3
+
+95% CIs for Ne^
+* Parametric                     273.3       356.7       346.2       587.5
+                              Infinite    Infinite    Infinite    Infinite
+
+* JackKnife on Samples           133.7       201.3       234.0       262.4
+                              Infinite    Infinite    Infinite    Infinite
+
+**************************************************************************
+
+Population     3 [Svalbard]  (Number of Individuals = 60)
+****************
+--------------------------------------------------------------------------
+Lowest Allele Frequency Used     0.100       0.050       0.020         0+
+--------------------------------------------------------------------------
+
+LINKAGE DISEQUILIBRIUM METHOD
+
+Harmonic Mean Sample Size =       57.5        57.6        57.6        57.7
+Independent Comparisons =        974        3156        5512        7637
+OverAll r^2 =                 0.018247    0.017653    0.018134    0.018377
+Expected r^2 Sample =         0.018336    0.018314    0.018300    0.018269
+Estimated Ne^ =               Infinite    Infinite    Infinite      3066.3
+
+95% CIs for Ne^
+* Parametric                     200.3      1370.5       626.5       470.2
+                              Infinite    Infinite    Infinite    Infinite
+
+* JackKnife on Samples           114.5       463.1       340.0       272.2
+                              Infinite    Infinite    Infinite    Infinite
+
+**************************************************************************
+
+Ending time: Wed Jan 21 20:44:42 2026
+-------------------------------------
+

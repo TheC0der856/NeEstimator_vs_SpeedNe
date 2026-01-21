@@ -96,8 +96,8 @@ for (file in input_files) {
 }
 
 # this did not work, column names were removed manually and " was removed manually if numbers were treated as characters, but was not time tracked
+# we also removed sites manually with more than 30 individuals 
 
 #mem_after <- sum(gc()[, "used"])
 end_time <- Sys.time()
 end_time - start_time
-#mem_after - mem_before
