@@ -39,6 +39,12 @@ my_theme <- theme_minimal() +
 
 # Plots
 (
+  ggplot(results_plot, aes(x = Group, y = na_percent, fill = Tool)) +
+    geom_boxplot(show.legend = FALSE) +
+    labs(title = "Errors [%]", y = "", x = "") +
+    scale_fill_manual(values = c("grey", "grey30")) +
+    my_theme
+) | (
   ggplot(results_plot, aes(x = Group, y = memory_mb, fill = Tool)) +
     geom_boxplot(show.legend = FALSE) +
     labs(title = "Memory [MB]", y = "", x = "") +
@@ -51,10 +57,4 @@ my_theme <- theme_minimal() +
     scale_y_log10() +
     scale_fill_manual(values = c("grey", "grey30")) +
     my_theme
-) | (
-  ggplot(results_plot, aes(x = Group, y = na_percent, fill = Tool)) +
-    geom_boxplot(show.legend = FALSE) +
-    labs(title = "Errors [%]", y = "", x = "") +
-    scale_fill_manual(values = c("grey", "grey30")) +
-    my_theme
-)
+) 
