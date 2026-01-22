@@ -117,9 +117,9 @@ wilcox.test(speed_errors_percent$na_percent,
             neest_errors_percent$na_percent, 
             paired = TRUE,
             alternative = "two.sided")
-# p-value = 0.0009324, drei Stern
+# p-value = 0.0009324, drei Stern (p < 0.001)
 wilcox.test(speed_errors_percent$negative_percent,
             neest_errors_percent$negative_percent, 
             paired = TRUE,
             alternative = "two.sided")
-# p-value = 0.4412, ein Stern
+# p-value = 0.4412, ein Stern (p < 0.05)
