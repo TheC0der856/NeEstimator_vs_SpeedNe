@@ -61,11 +61,8 @@ errors_percent <- function(df) {
   df %>%
     group_by(marker, dataset) %>%
     summarise(
-      total = n(),
-      n_na        = sum(is.na(Ne)),
-      n_negative  = sum(!is.na(Ne) & Ne < 0),
-      na_percent       = 100 * n_na / total,
-      negative_percent = 100 * n_negative / total,
+      na_percent       = 100 * mean(is.na(Ne)),
+      negative_percent = 100 * mean(Ne < 0, na.rm = TRUE),
       .groups = "drop"
     )
 }
@@ -77,10 +74,10 @@ mean_sd_by_marker <- function(df) {
   df %>%
     group_by(marker) %>%
     summarise(
-      avg_na_percent       = mean(na_percent),
-      sd_na_percent        = sd(na_percent),
-      avg_negative_percent = mean(negative_percent),
-      sd_negative_percent  = sd(negative_percent),
+      mean_na_percent       = mean(na_percent),
+      sd_na_percent         = sd(na_percent),
+      mean_negative_percent = mean(negative_percent, na.rm = TRUE),
+      sd_negative_percent   = sd(negative_percent, na.rm = TRUE),
       .groups = "drop"
     )
 }
@@ -92,10 +89,10 @@ mean_sd_all <- function(df) {
   df %>%
     summarise(
       marker = "all",
-      avg_na_percent       = mean(na_percent),
-      sd_na_percent        = sd(na_percent),
-      avg_negative_percent = mean(negative_percent),
-      sd_negative_percent  = sd(negative_percent),
+      mean_na_percent       = mean(na_percent),
+      sd_na_percent         = sd(na_percent),
+      mean_negative_percent = mean(negative_percent, na.rm = TRUE),
+      sd_negative_percent   = sd(negative_percent, na.rm = TRUE),
     )
 }
 speed_all <- mean_sd_all(speed_errors_percent)
@@ -109,6 +106,12 @@ neest_mean_sd <- bind_rows(neest_separate, neest_all) %>%
   mutate(source = "neest")
 errors_mean_sd <- bind_rows(speed_mean_sd, neest_mean_sd)
 
+# rename
+names(errors_mean_sd)[names(errors_mean_sd) == "source"] <- "program"
+errors_mean_sd$program <- ifelse(errors_mean_sd$program == "speedne", "SpeedNe",
+                          ifelse(errors_mean_sd$program == "neest", "NeEstimator",
+                                errors_mean_sd$program))
+
 # save
 write.csv(errors_mean_sd, "results/errors.csv", row.names = FALSE)
 
@@ -117,9 +120,9 @@ wilcox.test(speed_errors_percent$na_percent,
             neest_errors_percent$na_percent, 
             paired = TRUE,
             alternative = "two.sided")
-# p-value = 0.0009324, drei Stern (p < 0.001)
+# p-value = 0.0009324, three stars (p < 0.001)
 wilcox.test(speed_errors_percent$negative_percent,
             neest_errors_percent$negative_percent, 
             paired = TRUE,
             alternative = "two.sided")
-# p-value = 0.4412, ein Stern (p < 0.05)
+# p-value = 0.2936, not significant

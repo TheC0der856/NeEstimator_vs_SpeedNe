@@ -1,5 +1,3 @@
-# compare time and memory
-
 # load data
 NeEstimator <- read.csv("results/NeEstimator/runtime_memory.csv") # seconds is the whole calculation, memory was measured with random controll on task manager, but before that was also measured with sh code with server and comparable
 SpeedNe     <- read.csv("results/SpeedNe/timing_memory/2_calculation.csv", sep = ";", stringsAsFactors = FALSE) # seconds is the average per single calculation, memory is from the task manager
@@ -29,18 +27,18 @@ SNP_data_sets <- c(
   "Oncorhynchus_tshawytscha","Physeter_macrocephalus","Pinus_halepensis",
   "Salmo_trutta","Tectona_grandis"
 )
-add_marker_type <- function(df) {
+add_marker <- function(df) {
   df %>%
     mutate(
-      marker_type = case_when(
+      marker = case_when(
         file %in% SNP_data_sets ~ "SNP",
         file %in% microsatellite_data_sets ~ "microsatellite",
         TRUE ~ NA_character_
       )
     )
 }
-NeEstimator <- add_marker_type(NeEstimator)
-SpeedNe     <- add_marker_type(SpeedNe)
+NeEstimator <- add_marker(NeEstimator)
+SpeedNe     <- add_marker(SpeedNe)
 
 
 
@@ -59,8 +57,8 @@ for (m in markers) {
     idx_ne <- NULL
     idx_sp <- NULL
   } else {
-    idx_ne <- NeEstimator$marker_type == m
-    idx_sp <- SpeedNe$marker_type     == m
+    idx_ne <- NeEstimator$marker == m
+    idx_sp <- SpeedNe$marker     == m
   }
   results[[m]] <- data.frame(
     program       = c("NeEstimator", "SpeedNe"),
@@ -72,7 +70,7 @@ for (m in markers) {
                       calc_mean_sd(SpeedNe$memory_mb, idx_sp)["mean"]),
     mem_sd_mb     = c(calc_mean_sd(NeEstimator$memory_mb, idx_ne)["sd"],
                       calc_mean_sd(SpeedNe$memory_mb, idx_sp)["sd"]),
-    marker_type   = m
+    marker        = m
   )
 }
 performance_summary <- do.call(rbind, results)
