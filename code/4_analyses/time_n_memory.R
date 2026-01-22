@@ -9,7 +9,7 @@ SpeedNe     <- read.csv("results/SpeedNe/timing_memory/2_calculation.csv", sep =
 path  <- "results/NeEstimator/Ne/"
 files <- list.files(path, pattern = "\\.csv$", full.names = TRUE)
 rows  <- sapply(files, function(f) {nrow(read.csv(f))})
-NeEstimator$sec2compare <- NeEstimator$seconds/rows
+NeEstimator$seconds <- NeEstimator$seconds/rows
 
 
 # add marker information
@@ -40,46 +40,6 @@ add_marker <- function(df) {
 NeEstimator <- add_marker(NeEstimator)
 SpeedNe     <- add_marker(SpeedNe)
 
-
-
-# calculate the mean and sd
-calc_mean_sd <- function(values, marker_idx = NULL) {
-  if (!is.null(marker_idx)) values <- values[marker_idx]
-  values <- as.numeric(values)
-  c(mean = mean(values, na.rm = TRUE),
-    sd   = sd(values, na.rm = TRUE))
-}
-
-markers <- c("all", "SNP", "microsatellite")
-results <- list()
-for (m in markers) {
-  if (m == "all") {
-    idx_ne <- NULL
-    idx_sp <- NULL
-  } else {
-    idx_ne <- NeEstimator$marker == m
-    idx_sp <- SpeedNe$marker     == m
-  }
-  results[[m]] <- data.frame(
-    program       = c("NeEstimator", "SpeedNe"),
-    time_mean_sec = c(calc_mean_sd(NeEstimator$sec2compare, idx_ne)["mean"],
-                      calc_mean_sd(SpeedNe$seconds, idx_sp)["mean"]),
-    time_sd_sec   = c(calc_mean_sd(NeEstimator$sec2compare, idx_ne)["sd"],
-                      calc_mean_sd(SpeedNe$seconds, idx_sp)["sd"]),
-    mem_mean_mb   = c(calc_mean_sd(NeEstimator$memory_mb, idx_ne)["mean"],
-                      calc_mean_sd(SpeedNe$memory_mb, idx_sp)["mean"]),
-    mem_sd_mb     = c(calc_mean_sd(NeEstimator$memory_mb, idx_ne)["sd"],
-                      calc_mean_sd(SpeedNe$memory_mb, idx_sp)["sd"]),
-    marker        = m
-  )
-}
-performance_summary <- do.call(rbind, results)
-
-# save results
-write.csv(performance_summary, "results/time_memory.csv")
-
-
-
 # test significance of difference
 # robust, also when data is not normally distributed
 # two sided because there is no preassumption which program would be faster, just testing if there is a difference or not
@@ -97,3 +57,71 @@ sp_mem  <- na.omit(clean_numeric(SpeedNe$memory_mb))
 # test
 time_test <- wilcox.test(ne_time, sp_time, alternative = "two.sided") # p-value = 7.061e-10, three stars (p < 0.001)
 mem_test  <- wilcox.test(ne_mem, sp_mem, alternative = "two.sided", exact = FALSE) # p-value = 0.001125, two stars (p < 0.01)
+
+
+# use NA instead of error
+NeEstimator <- NeEstimator %>%
+  mutate(
+    seconds = ifelse(file == "Pyura_chilensis", NA, seconds),
+    memory_mb = ifelse(file == "Pyura_chilensis", NA, memory_mb)
+  )
+SpeedNe <- SpeedNe %>%
+  mutate(
+    seconds = as.numeric(ifelse(seconds == "error", NA, seconds)),
+    memory_mb = as.numeric(ifelse(memory_mb == "error", NA, memory_mb))
+  )
+
+# remove extra column
+NeEstimator <- NeEstimator %>% select(-X)
+SpeedNe     <- SpeedNe %>% select(-Column1)
+
+# combine
+combined <- bind_rows(
+  NeEstimator %>% mutate(Tool = "NeEstimator"),
+  SpeedNe %>% mutate(Tool = "SpeedNe")
+)
+options(scipen = 999)
+combined <- combined %>%
+  mutate(
+    seconds = round(seconds, 0),
+    memory_mb = round(memory_mb, 0)
+  )
+
+# save results
+write.csv(combined, "results/time_memory.csv")
+
+
+# # calculate the mean and sd
+# calc_mean_sd <- function(values, marker_idx = NULL) {
+#   if (!is.null(marker_idx)) values <- values[marker_idx]
+#   values <- as.numeric(values)
+#   c(mean = mean(values, na.rm = TRUE),
+#     sd   = sd(values, na.rm = TRUE))
+# }
+# 
+# markers <- c("all", "SNP", "microsatellite")
+# results <- list()
+# for (m in markers) {
+#   if (m == "all") {
+#     idx_ne <- NULL
+#     idx_sp <- NULL
+#   } else {
+#     idx_ne <- NeEstimator$marker == m
+#     idx_sp <- SpeedNe$marker     == m
+#   }
+#   results[[m]] <- data.frame(
+#     program       = c("NeEstimator", "SpeedNe"),
+#     time_mean_sec = c(calc_mean_sd(NeEstimator$sec2compare, idx_ne)["mean"],
+#                       calc_mean_sd(SpeedNe$seconds, idx_sp)["mean"]),
+#     time_sd_sec   = c(calc_mean_sd(NeEstimator$sec2compare, idx_ne)["sd"],
+#                       calc_mean_sd(SpeedNe$seconds, idx_sp)["sd"]),
+#     mem_mean_mb   = c(calc_mean_sd(NeEstimator$memory_mb, idx_ne)["mean"],
+#                       calc_mean_sd(SpeedNe$memory_mb, idx_sp)["mean"]),
+#     mem_sd_mb     = c(calc_mean_sd(NeEstimator$memory_mb, idx_ne)["sd"],
+#                       calc_mean_sd(SpeedNe$memory_mb, idx_sp)["sd"]),
+#     marker        = m
+#   )
+# }
+# performance_summary <- do.call(rbind, results)
+# 
+
