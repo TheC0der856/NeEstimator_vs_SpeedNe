@@ -69,51 +69,13 @@ errors_percent <- function(df) {
 speed_errors_percent <- errors_percent(speedne)
 neest_errors_percent <- errors_percent(neest)
 
-# mean and sd markers separate
-mean_sd_by_marker <- function(df) {
-  df %>%
-    group_by(marker) %>%
-    summarise(
-      mean_na_percent       = mean(na_percent),
-      sd_na_percent         = sd(na_percent),
-      mean_negative_percent = mean(negative_percent, na.rm = TRUE),
-      sd_negative_percent   = sd(negative_percent, na.rm = TRUE),
-      .groups = "drop"
-    )
-}
-speed_separate <- mean_sd_by_marker(speed_errors_percent)
-neest_separate <- mean_sd_by_marker(neest_errors_percent)
-
-# mean and sd all markers
-mean_sd_all <- function(df) {
-  df %>%
-    summarise(
-      marker = "all",
-      mean_na_percent       = mean(na_percent),
-      sd_na_percent         = sd(na_percent),
-      mean_negative_percent = mean(negative_percent, na.rm = TRUE),
-      sd_negative_percent   = sd(negative_percent, na.rm = TRUE),
-    )
-}
-speed_all <- mean_sd_all(speed_errors_percent)
-neest_all <- mean_sd_all(neest_errors_percent)
-
-
-# combine all information including programs
-speed_mean_sd <- bind_rows(speed_separate, speed_all) %>%
-  mutate(source = "speedne")
-neest_mean_sd <- bind_rows(neest_separate, neest_all) %>%
-  mutate(source = "neest")
-errors_mean_sd <- bind_rows(speed_mean_sd, neest_mean_sd)
-
-# rename
-names(errors_mean_sd)[names(errors_mean_sd) == "source"] <- "program"
-errors_mean_sd$program <- ifelse(errors_mean_sd$program == "speedne", "SpeedNe",
-                          ifelse(errors_mean_sd$program == "neest", "NeEstimator",
-                                errors_mean_sd$program))
-
+errors <- bind_rows(
+  speed_errors_percent %>% select(marker, dataset, na_percent, Tool),
+  neest_errors_percent  %>% select(marker, dataset, na_percent, Tool)
+)
 # save
-write.csv(errors_mean_sd, "results/errors.csv", row.names = FALSE)
+write.csv(errors, "results/errors.csv", row.names = FALSE)
+
 
 # are differences significant?
 wilcox.test(speed_errors_percent$na_percent,
@@ -126,3 +88,47 @@ wilcox.test(speed_errors_percent$negative_percent,
             paired = TRUE,
             alternative = "two.sided")
 # p-value = 0.2936, not significant
+
+
+# # mean and sd markers separate
+# mean_sd_by_marker <- function(df) {
+#   df %>%
+#     group_by(marker) %>%
+#     summarise(
+#       mean_na_percent       = mean(na_percent),
+#       sd_na_percent         = sd(na_percent),
+#       mean_negative_percent = mean(negative_percent, na.rm = TRUE),
+#       sd_negative_percent   = sd(negative_percent, na.rm = TRUE),
+#       .groups = "drop"
+#     )
+# }
+# speed_separate <- mean_sd_by_marker(speed_errors_percent)
+# neest_separate <- mean_sd_by_marker(neest_errors_percent)
+# 
+# # mean and sd all markers
+# mean_sd_all <- function(df) {
+#   df %>%
+#     summarise(
+#       marker = "all",
+#       mean_na_percent       = mean(na_percent),
+#       sd_na_percent         = sd(na_percent),
+#       mean_negative_percent = mean(negative_percent, na.rm = TRUE),
+#       sd_negative_percent   = sd(negative_percent, na.rm = TRUE),
+#     )
+# }
+# speed_all <- mean_sd_all(speed_errors_percent)
+# neest_all <- mean_sd_all(neest_errors_percent)
+# 
+# 
+# # combine all information including programs
+# speed_mean_sd <- bind_rows(speed_separate, speed_all) %>%
+#   mutate(source = "speedne")
+# neest_mean_sd <- bind_rows(neest_separate, neest_all) %>%
+#   mutate(source = "neest")
+# errors_mean_sd <- bind_rows(speed_mean_sd, neest_mean_sd)
+# 
+# # rename
+# names(errors_mean_sd)[names(errors_mean_sd) == "source"] <- "program"
+# errors_mean_sd$program <- ifelse(errors_mean_sd$program == "speedne", "SpeedNe",
+#                           ifelse(errors_mean_sd$program == "neest", "NeEstimator",
+#                                 errors_mean_sd$program))
