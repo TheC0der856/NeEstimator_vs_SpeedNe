@@ -48,4 +48,4 @@ for (i in 1:30) {
 }
 
 df_results
-write.csv(df_results, "results/simulate/sample_size/RLDNe/n50_Ne50.csv", row.names = FALSE)
+write.csv(df_results, "results/simulate/sample_size/RLDNe/n50_Ne5.csv", row.names = FALSE)
