@@ -13,4 +13,7 @@ code/remove/
 results/*
 .Rproj.user
 
-
+# NeEstimator resilts: 
+LDNEresults.txt
+LDNEresultsxLD.txt
+genepop.gen
