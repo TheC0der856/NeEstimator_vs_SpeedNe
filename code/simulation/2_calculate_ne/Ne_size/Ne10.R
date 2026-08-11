@@ -3,7 +3,7 @@ library(vcfR)
 library(adegenet)
 
 ### load data
-vcf <- read.vcfR("data/simulate_data/Ne_size/Ne100/Ne1000_01.vcf")
+vcf <- read.vcfR("data/simulate_data/Ne_size/Ne10/Ne10_01.vcf")
 gen <- vcfR2genind(vcf)
 gen_df <- genind2df(gen)
 #head(gen_df[,1:10])

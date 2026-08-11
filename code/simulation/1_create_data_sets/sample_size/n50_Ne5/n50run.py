@@ -1,13 +1,13 @@
 import os
 import msprime
 
-Ne = 100
-n_individuals = 100
+Ne = 5
+n_individuals = 50
 sequence_length = 100_000_000
 mutation_rate = 1e-8
 recombination_rate = 1e-8
 
-for i in range(1, 51):
+for i in range(1, 31):
 
     ts = msprime.sim_ancestry(
         samples=n_individuals,
@@ -24,11 +24,11 @@ for i in range(1, 51):
         random_seed=1000 + i
     )
 
-    filename = f"Ne100_{i:02d}.vcf"
+    filename = f"n50_{i:02d}.vcf"
 
     with open(filename, "w") as f:
         mts.write_vcf(f)
 
-    print(f"Simulation {i}/50: {mts.num_sites} SNPs -> {filename}")
+    print(f"Simulation {i}/30: {mts.num_sites} SNPs -> {filename}")
 
 
