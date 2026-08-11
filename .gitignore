@@ -5,7 +5,7 @@
 .Ruserdata
 
 
-datasets/*
+data/*
 SpeedNe_input/*
 code/1_preparation/1_installations/ignore*
 code/**/*.sh
