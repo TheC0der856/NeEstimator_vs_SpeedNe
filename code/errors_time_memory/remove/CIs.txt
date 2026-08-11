@@ -1,0 +1,104 @@
+# are the results comparable?
+speedne_df <- bind_rows(
+  lapply(names(speedne_list), function(f) {
+    speedne_list[[f]] %>%
+      mutate(dataset = f)
+  })
+)
+neest_df <- bind_rows(
+  lapply(names(neest_list), function(f) {
+    neest_list[[f]] %>%
+      mutate(
+        across(-Pop, ~ suppressWarnings(as.numeric(.))),
+        dataset = f
+      )
+  })
+)
+neest_df <- neest_df %>%
+  rename(site = Pop)
+
+compare_ne <- neest_df %>%
+  select(dataset, site, Ne_neest = Ne) %>%
+  inner_join(
+    speedne_df %>%
+      select(dataset, site, Ne_speedne = Ne),
+    by = c("dataset", "site")
+  )
+compare_ne <- compare_ne %>%
+  filter(!is.na(Ne_neest), Ne_neest >= 0)
+
+compare_ne %>%
+  summarise(
+    median_Ne_neest = median(Ne_neest, na.rm = TRUE),
+    median_Ne_speedne = median(Ne_speedne, na.rm = TRUE)
+  )
+#median_Ne_neest median_Ne_speedne
+#1            30.6          31.63773
+# median, weil schiefe verteilung.
+wilcox.test(
+  compare_ne$Ne_neest,
+  compare_ne$Ne_speedne,
+  paired = TRUE,
+  alternative = "two.sided"
+)
+
+
+
+# comparison between CI
+# parametric CI is bad, because of the distribution of the values. 
+# ein Jackknife-Konfidenzintervall und ein Bootstrap-Percentile-Intervall sind nicht direkt miteinander vergleichbar, 
+# auch wenn beide „nicht-parametrisch“ sind
+# Percentile-Intervall more exact more calculation intensive, but more recommended than jacknife
+
+# calculate size of CI
+speedne_df$interval_width <- ifelse(
+  is.infinite(speedne_df$upper_97_5_interval_percentile),
+  Inf,
+  speedne_df$upper_97_5_interval_percentile -
+    speedne_df$lower_97_5_interval_percentile
+)
+neest_df$interval_width <- neest_df$upper_jackknife_confidence_interval - neest_df$lower_jackknife_confidence_interval
+
+# combine in one dataframe
+compare_CI <- neest_df %>%
+  select(dataset, site, CI_neest = interval_width) %>%
+  inner_join(
+    speedne_df %>%
+      select(dataset, site, CI_speedne = interval_width),
+    by = c("dataset", "site")
+  ) %>%
+  filter(
+    !is.na(CI_neest),
+    !is.na(CI_speedne),
+    CI_neest >= 0,
+    CI_speedne >= 0
+  )
+
+# compare CIS
+compare_CI %>%
+  summarise(
+    median_CI_neest = median(CI_neest, na.rm = TRUE),
+    median_CI_speedne = median(CI_speedne, na.rm = TRUE)
+  )
+#median_Ne_neest median_Ne_speedne
+#1            30.6          31.63773
+# median, weil schiefe verteilung.
+wilcox.test(
+  compare_CI$CI_neest,
+  compare_CI$CI_speedne,
+  paired = TRUE,
+  alternative = "two.sided"
+)
+
+# count errors in Speed-Ne 
+# number of Inf in relation to all CIs
+total_n <- length(speedne_df$interval_width)
+n_inf   <- sum(is.infinite(speedne_df$interval_width))
+n_inf/total_n *100
+# 19% 
+
+# same for NeEstimator
+total_n <- length(neest_df$interval_width)
+n_na <- sum(is.na(neest_df$interval_width))
+n_na / total_n * 100
+# 29%
