@@ -24,7 +24,7 @@ for i in range(1, 51):
         random_seed=1000 + i
     )
 
-    filename = f"Ne1000_{i:02d}.vcf"
+    filename = f"Ne100_{i:02d}.vcf"
 
     with open(filename, "w") as f:
         mts.write_vcf(f)
