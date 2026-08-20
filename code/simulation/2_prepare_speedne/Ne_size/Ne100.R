@@ -32,7 +32,7 @@ for (i in 1:30) {
   
   write.table(
     gen_df,
-    sprintf("data/simulated_data_into_csv/Ne_size/Ne50/Ne100_%02d.csv", i),
+    sprintf("data/simulated_data_into_csv/Ne_size/Ne100/Ne100_%02d.csv", i),
     row.names = FALSE,
     col.names = FALSE,
     sep = ",",
