@@ -3,8 +3,8 @@ library(ggplot2)
 library(patchwork)
 
 # Load data
-errors <- read.csv("results/errors.csv")
-time_mem <- read.csv("results/time_memory.csv")
+errors <- read.csv("results/errors_speed_memory/errors.csv")
+time_mem <- read.csv("results/errors_speed_memory/time_memory.csv")
 
 # combine results
 results <- errors %>%
