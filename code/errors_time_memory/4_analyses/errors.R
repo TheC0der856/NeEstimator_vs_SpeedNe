@@ -1,8 +1,8 @@
 library(dplyr)
 
 ## Load data
-speedne <- read.csv("results/SpeedNe/processed/summary.csv")
-neest   <- read.csv("results/NeEstimator/summary_Ne.csv")
+speedne <- read.csv("results/errors_speed_memory/SpeedNe/processed/summary.csv")
+neest   <- read.csv("results/errors_speed_memory/NeEstimator/summary_Ne.csv")
 
 # # clean data
 # # show sites which are in speedne but not in neest
@@ -62,12 +62,12 @@ errors_percent <- function(df) {
     group_by(marker, dataset) %>%
     summarise(
       na_percent       = 100 * mean(is.na(Ne)),
-      negative_percent = 100 * mean(Ne < 0, na.rm = TRUE),
       .groups = "drop"
     )
 }
-speed_errors_percent <- errors_percent(speedne)
-neest_errors_percent <- errors_percent(neest)
+
+speed_errors_percent <- errors_percent(speedne) %>%  mutate(Tool = "speed")
+neest_errors_percent <- errors_percent(neest) %>%  mutate(Tool = "neest")
 
 errors <- bind_rows(
   speed_errors_percent %>% select(marker, dataset, na_percent, Tool),
@@ -75,6 +75,8 @@ errors <- bind_rows(
 )
 # save
 write.csv(errors, "results/errors.csv", row.names = FALSE)
+
+
 
 
 # are differences significant?
