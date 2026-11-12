@@ -8,7 +8,7 @@
 data/*
 SpeedNe_input/*
 code/1_preparation/1_installations/ignore*
-code/errors_time_memory/*/*.sh
+code/errors_time_memory/2_calculate_Ne/NeEstimator/*.sh
 code/remove/
 results/*
 .Rproj.user
