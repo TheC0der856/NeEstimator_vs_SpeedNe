@@ -44,22 +44,36 @@ results <- bind_rows(
     relative_error = absolute_error / true_Ne
   )
 
-# Accuracy vergleichen
-accuracy <- results %>%
-  group_by(dataset, Method) %>%
-  summarise(
-    Bias = mean(error, na.rm = TRUE),
-    MAE = mean(absolute_error, na.rm = TRUE),
-    RMSE = sqrt(mean(error^2, na.rm = TRUE)),
-    Relative_Error = mean(relative_error, na.rm = TRUE),
-    .groups = "drop"
+
+############ show results:
+results$dataset <- factor(
+  results$dataset,
+  levels = c("constant", "decline", "expansion", "bottleneck")
+)
+
+ggplot(results, aes(x = dataset, y = absolute_error, fill = Method)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  labs(
+    x = "",
+    y = expression("|" * italic("Simulated ") * N[e] *
+                     " - " * italic("Estimated ") * N[e] * "|"),
+    fill = ""
+  ) +
+  scale_fill_manual(values = c("grey", "grey30")) +
+  theme_minimal() +
+  theme(
+    strip.text = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    legend.position = "none",
+    #legend.text = element_text(size = 12),
+    panel.grid = element_blank(),
+    axis.ticks = element_line(size = 0.5, color = "black"),
+    axis.line = element_line(size = 0.5, color = "black")
   )
 
-accuracy
 
 
-
-
+##### Are the differences in results significant?
 # Absolute Fehler pro Simulation
 comparison <- results %>%
   group_by(dataset, Method) %>%
@@ -77,3 +91,6 @@ wilcox.test(
   comparison$NeEstimator,
   paired = TRUE
 )
+
+
+
