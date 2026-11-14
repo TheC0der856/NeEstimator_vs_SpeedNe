@@ -1,0 +1,1 @@
+Das läuft so noch nicht. NeEstimator findet selbst für Mikrosatelliten die mit N1000 erstellt worden sind nur eine Ne von 1,irgendwas. 

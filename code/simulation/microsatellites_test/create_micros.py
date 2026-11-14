@@ -23,8 +23,7 @@ ts = msprime.sim_ancestry(
 mts = msprime.sim_mutations(
     ts,                                                         # enter model parameters
     rate       =1e-4,                                           # normal mutation rate for microsatellites: "Every microsatellite is different: Intrinsic DNA features dictate mutagenesis of common microsatellites present in the human genome"
-    model      =msprime.SMM(                                    # Stepwise Mutation Model (SMM)
-	lo=2, hi=50),                                           # lowest and highest possible number of repeats
+    model      =msprime.SMM(),                                  # Stepwise Mutation Model (SMM)
     random_seed=100+run+popsize                                 # reproducability
 )
 
