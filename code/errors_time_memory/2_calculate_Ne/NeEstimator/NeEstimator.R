@@ -4,10 +4,10 @@ library(RLDNe)
 library(dplyr)
 
 # load file
-file_paths <- list.files(path = "datasets/", full.names = TRUE)
+file_paths <- list.files(path = "data/published_datasets/", full.names = TRUE)
 sheet <- "welcomeR"
 # e.g. always change
-# file_path <- "datasets/Gadus_morhua.xlsx"
+# file_path <- "data/published_datasets/Argiope_bruennichi.xlsx"
 Ne_Estimator_file <- read_xlsx(file_path , sheet = sheet)
 
 
