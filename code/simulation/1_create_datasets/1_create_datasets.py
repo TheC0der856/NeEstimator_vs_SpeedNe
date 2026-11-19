@@ -39,7 +39,7 @@ for N in Ns:
             population_size   =N,
             recombination_rate=rate_map,
             model=[
-                msprime.DiscreteTimeWrightFisher(duration=20),
+                msprime.DiscreteTimeWrightFisher(duration=1000),
                 msprime.StandardCoalescent()
                 ],
             random_seed       =42+i
