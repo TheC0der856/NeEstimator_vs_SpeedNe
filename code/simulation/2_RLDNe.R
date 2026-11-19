@@ -51,8 +51,8 @@ for (n_folder in n_folders) {
     std_out <- run_LDNe(rldne)
     df      <- read_LDNeOutFile(rldne)
     
-    # CritValue = 0.05
-    df_selected          <- df[2, , drop = FALSE]
+    # select and add information
+    df_selected          <- df[2, , drop = FALSE] # CritValue 4 = 0.00, 2 = 0.05
     df_selected$Pop      <- pop_name
     df_selected$N_folder <- n_folder
     
