@@ -1,0 +1,1 @@
+scp -r utr_gronefeld@elwe1.rarp-kl.de:/scratch/utr_gronefeld/simulate_SNP_datasets/try/N10000/N* C:\Users\Gronefeld\Desktop\Ne_programs\calculations\data\simulate_data\N10000

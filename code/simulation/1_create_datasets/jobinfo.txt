@@ -1,0 +1,11 @@
+Job ID: 25286520
+Array Job ID: 25286520_30
+Cluster: elwetritsch
+User/Group: utr_gronefeld/utr_utr
+State: COMPLETED (exit code 0)
+Cores: 1
+CPU Utilized: 12:08:54
+CPU Efficiency: 99.54% of 12:12:17 core-walltime
+Job Wall-clock time: 12:12:17
+Memory Utilized: 2.64 GB
+Memory Efficiency: 33.03% of 8.00 GB (8.00 GB/node)
