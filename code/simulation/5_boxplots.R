@@ -53,8 +53,8 @@ results_long <- results %>%
   mutate(
     Method = recode(
       Method,
-      SpeedNe_Ne = "SpeedNe",
-      NeEstimator_Ne = "NeEstimator"
+      SpeedNe_Ne = "sᴘᴇᴇᴅ-ɴᴇ",
+      NeEstimator_Ne =  "NᴇEꜱᴛɪᴍᴀᴛᴏʀ"
     ),
     dataset = factor(
       dataset,
@@ -89,12 +89,13 @@ ggplot(results_long, aes(x = Method, y = Ne, fill = Method)) +
   #   breaks = scales::breaks_pretty(n = 8)
   # ) +
   labs(
-    x = "Program", y = "Ne"
+    x = "Program", y = expression(italic(N)[e])
   ) +
   scale_fill_manual(values = c("grey", "grey30")) +
   theme_minimal() +
   theme(
-    strip.text = element_text(size = 14),
+    strip.text = element_text(size = 16),
+    axis.title = element_text(size = 14),
     axis.text = element_text(size = 12),
     legend.position = "none",
     panel.grid = element_blank(),
@@ -102,5 +103,43 @@ ggplot(results_long, aes(x = Method, y = Ne, fill = Method)) +
     axis.line = element_line(linewidth = 0.5, color = "black")
   )
 
+# Wilcox test
+# needs a different filter! all outliers required
+results_long <- results %>%
+  pivot_longer(
+    cols = c(SpeedNe_Ne, NeEstimator_Ne),
+    names_to = "Method",
+    values_to = "Ne"
+  ) %>%
+  filter(Ne >= 0) %>%
+  mutate(
+    Method = recode(
+      Method,
+      SpeedNe_Ne = "sᴘᴇᴇᴅ-ɴᴇ",
+      NeEstimator_Ne =  "NᴇEꜱᴛɪᴍᴀᴛᴏʀ"
+    ),
+    dataset = factor(
+      dataset,
+      levels = c("N10", "N100", "N1000", "N10000")
+    )
+  ) %>%
+  group_by(dataset) %>%
+  filter(
+    Method != lag(Method, default = first(Method)) |
+      row_number() == 1
+  ) %>%
+  ungroup()
 
 
+results_test <- results_long %>%
+  mutate(
+    reference_N = as.numeric(gsub("N", "", dataset)),
+    absolute_distance = abs(Ne - reference_N)
+  )
+
+wilcox.test(
+  x = results_test$absolute_distance[results_test$Method == "sᴘᴇᴇᴅ-ɴᴇ"],
+  y = results_test$absolute_distance[results_test$Method == "NᴇEꜱᴛɪᴍᴀᴛᴏʀ"],
+  paired = TRUE,
+  alternative = "two.sided"
+)
