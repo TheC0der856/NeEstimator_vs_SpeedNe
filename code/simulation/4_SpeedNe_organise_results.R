@@ -32,39 +32,53 @@ for (i in seq_along(SpeedNe_files)) {
   # r^2_{delta} AFT
   # percentile confidence interval
   # jackknifing over loci
-  line_start_jackknife_over_loci <- grep( "delete-one jackknifing over loci", SpeedNe_txt,ignore.case = TRUE)
-  if (length(line_start_jackknife_over_loci) == 1 &&  length(SpeedNe_txt) >= line_start_jackknife_over_loci + 64) {
-    result_txt <- SpeedNe_txt[line_start_jackknife_over_loci + 64]
+  # Find Ne
+  line_start <- grep(
+    "delete-one jackknifing over loci",
+    SpeedNe_txt,
+    ignore.case = TRUE
+  )
+  
+  # First search: jackknifing over loci (+64 lines)
+  if (length(line_start) == 1) {
     
-    results <- unlist(
-      regmatches(
-        result_txt,
-        gregexpr(
-          "-?\\d+\\.?\\d*|infinity",
-          result_txt,
-          ignore.case = TRUE
-        )
-      )
-    )
-    
-    results <- unname(sapply(results, function(x) {
-      if (tolower(x) == "infinity") Inf else as.numeric(x)
-    }))
-    
-    if (length(results) >= 3) {
-      Ne       <- results[1]
-      lower_CI <- results[2]
-      upper_CI <- results[3]
-    } else {
-      Ne       <- NA
-      lower_CI <- NA
-      upper_CI <- NA
-    }
+    line_to_extract <- line_start + 64
     
   } else {
-    Ne       <- NA
-    lower_CI <- NA
-    upper_CI <- NA
+    
+    # Alternative search: jackknife over r^2 (+65 lines)
+    line_start <- grep(
+      "Confidence intervals from a? delete-one jackknife over r",
+      SpeedNe_txt,
+      ignore.case = TRUE
+    )
+    
+    if (length(line_start) == 1) {
+      line_to_extract <- line_start + 65
+    } else {
+      line_to_extract <- NA_integer_
+    }
+  }
+  
+  # Extract Ne
+  Ne <- NA_real_
+  
+  if (!is.na(line_to_extract) && line_to_extract <= length(SpeedNe_txt)) {
+    
+    result_txt <- SpeedNe_txt[line_to_extract]
+    
+    results <- regmatches(
+      result_txt,
+      gregexpr("-?\\d+\\.?\\d*|infinity", result_txt, ignore.case = TRUE)
+    )[[1]]
+    
+    if (length(results) >= 1) {
+      Ne <- if (tolower(results[1]) == "infinity") {
+        Inf
+      } else {
+        as.numeric(results[1])
+      }
+    }
   }
   
   # Add results to summary table
@@ -73,9 +87,7 @@ for (i in seq_along(SpeedNe_files)) {
     data.frame(
       site     = site[i],
       dataset  = dataset[i],
-      Ne       = round(Ne, 1),
-      lower_CI = round(lower_CI, 1),
-      upper_CI = round(upper_CI, 1)
+      Ne       = round(Ne, 1)
     )
   )
 }
