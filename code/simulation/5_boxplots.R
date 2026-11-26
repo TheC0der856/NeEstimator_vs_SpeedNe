@@ -2,6 +2,7 @@
 library(ggplot2)
 library(dplyr)
 library(tidyr) # pivot_longer
+library(ggh4x)
 
 # load results
 SpeedNe <- read.csv("results/simulate/SpeedNe.csv")
@@ -10,7 +11,7 @@ NeEstimator <- read.csv("results/simulate/RLDNe.csv")
 # extract Ne and dataset information
 SpeedNe <- SpeedNe %>%
   select(dataset, 
-         SpeedNe = Ne) 
+         SpeedNe_Ne = Ne) 
 NeEstimator <- NeEstimator %>%
   select(
     dataset = N_folder,
@@ -47,8 +48,8 @@ results_long <- results %>%
     values_to = "Ne"
   ) %>%
   filter(Ne >= 0,
-         !(dataset == "N1000" & Ne > 2000),
-         !(dataset == "N10000" & Ne > 20000)
+         #!(dataset == "N1000" & Ne > 2000),
+         #!(dataset == "N10000" & Ne > 20000)
   ) %>%
   mutate(
     Method = recode(
@@ -82,12 +83,24 @@ ggplot(results_long, aes(x = Method, y = Ne, fill = Method)) +
   geom_boxplot() +
   facet_wrap(
     ~ dataset, scales = "free_y", ncol = 4,
-    labeller = as_labeller(c(N10 = "A", N100 = "B", N1000 = "C", N10000 = "D"))
+    labeller = as_labeller(c(
+      N10 = "A", N100 = "B", N1000 = "C", N10000 = "D"
+    ))
   ) +
-  # scale_y_continuous(
-  #   trans = scales::pseudo_log_trans(base = 10),
-  #   breaks = scales::breaks_pretty(n = 8)
-  # ) +
+  facetted_pos_scales(
+    y = list(
+      NULL,
+      NULL,
+      scale_y_continuous(
+        limits = c(0, 2000),
+        oob = scales::oob_keep
+      ),
+      scale_y_continuous(
+        limits = c(0, 20000),
+        oob = scales::oob_keep
+      )
+    )
+  ) +
   labs(
     x = "Program", y = expression(italic(N)[e])
   ) +
@@ -102,6 +115,8 @@ ggplot(results_long, aes(x = Method, y = Ne, fill = Method)) +
     axis.ticks = element_line(linewidth = 0.5, color = "black"),
     axis.line = element_line(linewidth = 0.5, color = "black")
   )
+  
+
 
 # Wilcox test
 # needs a different filter! all outliers required
